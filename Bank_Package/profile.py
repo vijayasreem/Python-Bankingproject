@@ -151,3 +151,4 @@ def updatename(self):
     self.name_b2 = tk.Button(self.nameupdate, text='<<Back', bg='gray', font=('Times', '20', 'bold'), command=self.show_m1, fg='#000000')
     self.name_b2.grid(row=4, column=0, pady=15, padx=10)
     self.nameupdate.grid(padx=self.ws * 0.3, pady=self.hs * 0.2)
+    self.nameupdate.grid(padx=self.ws * 0.4, pady=self.hs * 0.3)
