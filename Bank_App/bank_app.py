@@ -393,22 +393,16 @@ def credit(self):
             c = db.cursor()
             c.execute('select balance from user where name="{}"'.format(self.user))
             bal = c.fetchone()[0]
-            c.execute('select sum(amount) from transactions where date="{}" and type="credit"'.format(datetime.date.today()))
-            total_credit = c.fetchone()[0]
-            if total_credit is None:
-                total_credit = 0
-            if total_credit + amount > 50000:
+            if amount > 50000:
                 messagebox.showerror('Credit Limit Exceeded', 'Your daily credit limit is exceeded.')
+                return
+            c.execute('select count(*) from transactions where name="{}"'.format(self.user))
+            transaction_count = c.fetchone()[0]
+            if transaction_count >= 3:
+                messagebox.showerror('Transaction Limit Exceeded', 'You cannot perform more than 3 transactions in a day.')
                 return
             cmd = "update user SET balance=balance+{} where name='{}'".format(amnt, self.user)
             c.execute(cmd)
-            db.commit()
-            c.execute('select count(*) from transactions where date="{}"'.format(datetime.date.today()))
-            transaction_count = c.fetchone()[0]
-            if transaction_count is None:
-                transaction_count = 0
-            transaction_count += 1
-            c.execute('update user set daily_credit_spent={}, transaction_count={} where name="{}"'.format(total_credit + amount, transaction_count, self.user))
             db.commit()
             c.close()
             db.close()
