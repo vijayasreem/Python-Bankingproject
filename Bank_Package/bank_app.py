@@ -7,8 +7,9 @@ from login import Login
 from credit import CREDIT
 from debit import DEBIT
 from profile import PROFILE
+from transfer import TRANSFER
 
-class Bank(Signup,Login,CREDIT,DEBIT,PROFILE):
+class Bank(Signup,Login,CREDIT,DEBIT,PROFILE,TRANSFER):
 
     def __init__(self,master):
         Signup.__init__(self)
@@ -16,7 +17,7 @@ class Bank(Signup,Login,CREDIT,DEBIT,PROFILE):
         CREDIT.__init__(self)
         DEBIT.__init__(self)
         PROFILE.__init__(self)
-
+        TRANSFER.__init__(self)
 
         self.master = master()
         self.master.title('BANK Application')
@@ -47,19 +48,23 @@ class Bank(Signup,Login,CREDIT,DEBIT,PROFILE):
         self.m_b3 = tk.Button(self.menu,text='Profile',bd=0,bg="#777777",font=('Times','20','bold'),command=self.show_profile,fg="#aadcba")
         self.m_b3.grid(row=0,column=1,padx=76,pady=25)
 
-
         self.m_b4 = tk.Button(self.menu,text='LOGOUT',width=10,bg="#777777",font=('Times','18','bold'),command=self.show_f,fg="#ff0000")
-
         self.m_b4.grid(row=3,column=1,padx=76,pady=15)
-        self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
 
+        self.m_b5 = tk.Button(self.menu,text='Transfer Funds',width=15,bg="#777777",font=('Times','18','bold'),command=self.transfer_funds,fg="#003b8b")
+        self.m_b5.grid(row=3,column=0,padx=60,pady=10)
+
+        self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
 
     def show_f(self):
         self.menu.grid_forget()
         self.menu_forget = True
         self.f.grid(padx=self.ws*.3,pady=self.hs*.2)
 
-
+    def transfer_funds(self):
+        self.menu.grid_forget()
+        self.menu_forget = True
+        self.tf.grid(padx=self.ws*.3,pady=self.hs*.2)
 
     def main_frame(self):
 
@@ -79,8 +84,6 @@ class Bank(Signup,Login,CREDIT,DEBIT,PROFILE):
         self.l2 = Label(self.f,text='Password : ',bg='#777777',font=('Times','30','bold'),fg='#123456')
         self.l2.grid(row=2,column=0)
 
-
-
         self.e2 = Entry(self.f,textvariable=Bank.password,show='*',bg='#123456',width=20,font=('Times','20','bold'),fg='#FFFFFF')
         self.e2.grid(row=2,column=1,padx=20)
 
@@ -98,12 +101,9 @@ class Bank(Signup,Login,CREDIT,DEBIT,PROFILE):
         messagebox.showinfo("PRIVACY","Due to your privacy reason you have to meet in person to nearest branch with all documents to update your password.")
 
     def show_sf(self):
-            self.sp.grid_forget()
-            self.menu_forget = True
-            self.f.grid(padx=self.ws*.3,pady=self.hs*.2)
-
-
-
+        self.sp.grid_forget()
+        self.menu_forget = True
+        self.f.grid(padx=self.ws*.3,pady=self.hs*.2)
 
 root = Bank(Tk)
 root.run()
