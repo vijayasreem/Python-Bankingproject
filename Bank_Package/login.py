@@ -79,9 +79,7 @@ class Login():
                         self.menu()
 
                     if RememberMe:
-                        # Store credentials securely
-                        # Code to store credentials
-
+                        
                 else :
 
                     messagebox.showerror("Error","!!Invalid Password")
