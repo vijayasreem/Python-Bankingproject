@@ -77,9 +77,6 @@ class Login():
 
                     else :
                         self.menu()
-
-                    if RememberMe:
-                        
                 else :
 
                     messagebox.showerror("Error","!!Invalid Password")
