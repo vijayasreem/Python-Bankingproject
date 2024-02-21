@@ -1,6 +1,3 @@
-Sure! Here's an example of Python Flask API code that implements the loan application status check functionality based on the given user story:
-
-```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -46,14 +43,3 @@ def generate_and_send_otp(email):
 
 if __name__ == '__main__':
     app.run(debug=True)
-```
-
-Note: This code is a simplified example and does not include the actual implementation of OTP generation and email sending logic. You would need to replace the `generate_and_send_otp` function with your own implementation to generate a random OTP and send it securely using Salesforce's email functionality.
-
-To run the Flask API, save the code in a file named `app.py` and execute the following command in your terminal:
-
-```
-python app.py
-```
-
-The API will be accessible at http://localhost:5000/loan-application/status and can be tested using a tool like Postman by sending a POST request with the loan ID and OTP in the request body as JSON data.
