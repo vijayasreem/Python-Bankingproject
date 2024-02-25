@@ -61,12 +61,20 @@ class Bank:
                 c = db.cursor()
                 c.execute('select balance from user where name="{}"'.format(self.user))
                 bal = c.fetchone()[0]
+                if amount > 20000:
+                    messagebox.showerror('Credit Limit Exceeded', 'Your daily credit limit is exceeded.')
+                    return
+                c.execute('select count(*) from transactions where name="{}"'.format(self.user))
+                transaction_count = c.fetchone()[0]
+                if transaction_count >= 30:
+                    messagebox.showerror('Transaction Limit Exceeded', 'You cannot perform more than 30 transactions in a day.')
+                    return
                 cmd = "update user SET balance=balance+{} where name='{}'".format(amnt, self.user)
                 c.execute(cmd)
                 db.commit()
                 c.close()
                 db.close()
-                s = 'Sucessfully {} rs credited to the account associated with {}.\nYour Updated Balance is now {}.'.format(amount, self.user, amount + bal)
+                s = 'Successfully {} rs credited to the account associated with {}.\nYour Updated Balance is now {}.'.format(amount, self.user, amount + bal)
                 messagebox.showinfo('CREDIT', s)
                 self.credframe.grid_forget()
                 self.menu.grid(padx=self.ws * 0.3, pady=self.hs * 0.2)
@@ -207,7 +215,7 @@ class Bank:
         self.up_opass_lbl.grid(row=1, column=0, padx=21, pady=22)
         self.Old_Password = StringVar()
         self.New_Password = StringVar()
-        self.old_password = Entry(self.passupdate, textvariable=self.Old_Password, bg='#123456', show='*', width=20, font=('Times', '20', 'bold'), fg='#FFFFFF')
+        self.old_password = Entry(self.passupdate, textvariable=self.Old_Password, bg='#123456', show='*', width=8, font=('Times', '20', 'bold'), fg='#FFFFFF')
         self.old_password.grid(row=1, column=1, padx=31, pady=22)
         self.up_npass_lbl = Label(self.passupdate, text='New password:', bg='gray', font=('Times', '25', 'bold'), fg='#FFFFFF')
         self.up_npass_lbl.grid(row=2, column=0, padx=30, pady=20)
@@ -383,55 +391,3 @@ class Bank:
 root = Bank(Tk)
 root.run()
 mainloop()
-
-def credit(self):
-    if self.up_amnt.get():
-        try:
-            amount = float(self.up_amnt.get())
-            amnt = self.up_amnt.get()
-            db = sql.connect('localhost', 'bank', 'bank', 'bank')
-            c = db.cursor()
-            c.execute('select balance from user where name="{}"'.format(self.user))
-            bal = c.fetchone()[0]
-            if amount > 50000:
-                messagebox.showerror('Credit Limit Exceeded', 'Your daily credit limit is exceeded.')
-                return
-            c.execute('select count(*) from transactions where name="{}"'.format(self.user))
-            transaction_count = c.fetchone()[0]
-            if transaction_count >= 3:
-                messagebox.showerror('Transaction Limit Exceeded', 'You cannot perform more than 3 transactions in a day.')
-                return
-            cmd = "update user SET balance=balance+{} where name='{}'".format(amnt, self.user)
-            c.execute(cmd)
-            db.commit()
-            c.close()
-            db.close()
-            s = 'Successfully {} rs credited to the account associated with {}.\nYour Updated Balance is now {}.'.format(amount, self.user, amount + bal)
-            messagebox.showinfo('CREDIT', s)
-            self.credframe.grid_forget()
-            self.menu.grid(padx=self.ws * 0.3, pady=self.hs * 0.2)
-        except ValueError as e:
-            messagebox.showerror('!!Input Error!!', 'Please Enter a Valid Amount')
-    else:
-        messagebox.showerror('!!Input Error!!', 'Please Enter Some Amount to Credit')
-
-def change_password(self):
-    self.profframe.grid_forget()
-    self.passupdate = tk.Frame(self.master, bg='gray')
-    self.up_opass_lbl1 = Label(self.passupdate, text='Welcome to Password Update Service', bg='gray', font=('Times', '20', 'bold'), fg='#abcdef')
-    self.up_opass_lbl1.grid(row=0, column=0, columnspan=3, padx=20, pady=20)
-    self.up_opass_lbl = Label(self.passupdate, text='Old password:', bg='gray', font=('Times', '25', 'bold'), fg='#FFFFFF')
-    self.up_opass_lbl.grid(row=1, column=0, padx=21, pady=22)
-    self.Old_Password = StringVar()
-    self.New_Password = StringVar()
-    self.old_password = Entry(self.passupdate, textvariable=self.Old_Password, bg='#123456', show='*', width=8, font=('Times', '20', 'bold'), fg='#FFFFFF')
-    self.old_password.grid(row=1, column=1, padx=31, pady=22)
-    self.up_npass_lbl = Label(self.passupdate, text='New password:', bg='gray', font=('Times', '25', 'bold'), fg='#FFFFFF')
-    self.up_npass_lbl.grid(row=2, column=0, padx=30, pady=20)
-    self.new_password = Entry(self.passupdate, bg='#123456', textvariable=self.New_Password, width=20, show='*', font=('Times', '20', 'bold'), fg='#FFFFFF')
-    self.new_password.grid(row=2, column=1, padx=30, pady=21)
-    self.pass_b1 = tk.Button(self.passupdate, text='Update', width=10, bg='gray', font=('Times', '20', 'bold'), command=self.update_password, fg='#000000')
-    self.pass_b1.grid(row=3, column=1, columnspan=2, padx=30, pady=22)
-    self.pass_b2 = tk.Button(self.passupdate, text='<<Back', bg='gray', font=('Times', '18', 'bold'), command=self.show_m3, fg='#000000')
-    self.pass_b2.grid(row=3, column=0, pady=15, padx=30)
-    self.passupdate.grid(padx=self.ws * 0.3, pady=self.hs * 0.2)
