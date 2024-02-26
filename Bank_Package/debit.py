@@ -4,7 +4,6 @@ import pymysql as sql
 from tkinter import messagebox
 
 
-
 class DEBIT():
     
     def debframe(self):
@@ -21,7 +20,6 @@ class DEBIT():
         self.up_amnt_lbl2 = Label(self.debit_Balance,text='Amount',font=('Times','20','bold'),fg="#ffffff",bg='#777777')
         self.up_amnt_lbl2.grid(row=2,column=0,pady=10,padx=30)
 
-
         self.up_amnt = Entry(self.debit_Balance,bg='#123456',width=20,font=('Times','20','bold'),fg='#FFFFFF')
         self.up_amnt.grid(row=2,column=1,pady=12,padx=55)
 
@@ -31,14 +29,11 @@ class DEBIT():
         self.up_amnt_btn1 = tk.Button(self.debit_Balance,text='<<Back',bg="#777777",font=('Times','18','bold'),command=self.show_m4,fg="#000000",width=10)
         self.up_amnt_btn1.grid(row=4,column=0,pady=17,padx=40)
 
-
         self.debit_Balance.grid(padx=self.ws*.3,pady=self.hs*.2)
 
     def show_m4(self):
         self.debit_Balance.grid_forget()
         self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
-
-
 
     def update_balance(self):
         if self.up_amnt.get() :
@@ -62,7 +57,6 @@ class DEBIT():
                         s='\nInsufficient account balance\nyou only have {}rs in your account'.format(bal)
                         messagebox.showinfo("!!DEBIT ERROR!!",s)
 
-
                 else :
                     messagebox.showerror("!!UNKOWN ERROR!!","DATABASE LOOKUP Error \nSomething WEnt Wrong")
             except ValueError as e :
@@ -73,4 +67,3 @@ class DEBIT():
 
         else :
             messagebox.showerror("!!Input Error!!","Please Enter Amount to Debit")
-
