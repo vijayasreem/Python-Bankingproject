@@ -59,6 +59,30 @@ class CREDIT():
         else :
             messagebox.showerror("!!Input Error!!","Please Enter Some Amount to Credit")
 
+    def debit(self):
+        if self.up_amnt.get():
+            try :
+                amount = float(self.up_amnt.get())
+                amnt=self.up_amnt.get()
+                db = sql.connect('localhost','bank','bank','bank')
+                c = db.cursor()
+                c.execute('select balance from user where name="{}"'.format(self.user))
+                bal = c.fetchone()[0]
+                cmd="update user SET balance=balance-{} where name='{}'".format(amnt,self.user)
+                c.execute(cmd)
+                db.commit()
+                c.close()
+                db.close()
+                s='Sucessfully {} rs debited from the account associated with {}.\nYour Updated Balance is now {}.'.format(amount,self.user,bal-amount)
+                messagebox.showinfo("DEBIT",s)
+                self.credframe.grid_forget()
+                self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
+
+            except ValueError as e :
+                messagebox.showerror("!!Input Error!!","Please Enter a Valid Amount")
+        else :
+            messagebox.showerror("!!Input Error!!","Please Enter Some Amount to Debit")
+
     def show_m5(self):
         self.credframe.grid_forget()
         self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
