@@ -1,53 +1,56 @@
-Sure! Here's an example of a Python Flask API code that implements the given user story for the Bank's Credit Check and Pre-Qualification Process for Loan Applicants:
+Sure! Here's an example of a Python Flask API code that implements the Bank's Credit Check and Pre-Qualification Process for Loan Applicants user story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/creditcheck', methods=['POST'])
+@app.route('/credit_check', methods=['POST'])
 def credit_check():
-    # Get the applicant's credit score and financial history from the request data
     data = request.get_json()
-    credit_score = data.get('credit_score')
-    financial_history = data.get('financial_history')
-    
-    # Perform credit check and pre-qualification process
-    loan_amount, interest_rate_range = process_credit_check(credit_score, financial_history)
-    
-    # Generate pre-qualification outcome message
-    if loan_amount > 0:
-        outcome_message = f"Congratulations! You are pre-qualified for a loan amount of ${loan_amount} at an interest rate range of {interest_rate_range}."
-    else:
-        outcome_message = "We are sorry, but you do not meet the creditworthiness criteria for a loan."
-    
-    # Return the pre-qualification outcome message
-    return jsonify({'outcome_message': outcome_message})
 
-def process_credit_check(credit_score, financial_history):
-    # Perform credit score evaluation and financial history assessment
-    # Here, you can implement your own logic to evaluate the credit score and financial history.
-    # Calculate the loan amount and interest rate range based on the evaluation.
-    # For example, you can use conditional statements to determine the loan amount and interest rate range.
-    loan_amount = 0
-    interest_rate_range = "N/A"
-    
-    if credit_score >= 700 and financial_history == 'good':
-        loan_amount = 50000
-        interest_rate_range = "4-6%"
-    elif credit_score >= 600 and financial_history == 'average':
-        loan_amount = 25000
-        interest_rate_range = "6-8%"
-    elif credit_score >= 500 and financial_history == 'poor':
-        loan_amount = 10000
-        interest_rate_range = "8-10%"
-    
-    return loan_amount, interest_rate_range
+    # Perform credit check logic here
+    credit_score = calculate_credit_score(data)
+    financial_history = get_financial_history(data)
+
+    # Pre-qualify the applicant based on credit score and financial history
+    prequalification_result = prequalify_applicant(credit_score, financial_history)
+
+    # Generate response
+    response = {
+        'credit_score': credit_score,
+        'financial_history': financial_history,
+        'prequalification_result': prequalification_result
+    }
+
+    return jsonify(response), 200
+
+def calculate_credit_score(data):
+    # Implement credit score calculation logic here
+    return data['credit_score']
+
+def get_financial_history(data):
+    # Implement financial history retrieval logic here
+    return data['financial_history']
+
+def prequalify_applicant(credit_score, financial_history):
+    # Implement pre-qualification logic here
+    # Use credit_score and financial_history to determine loan amount and interest rate range
+    # Return pre-qualification result as a string or any format you prefer
+    return 'Pre-qualified for a loan amount of $X to $Y with an interest rate of Z% to W%'
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-In this example, we define a Flask API with a single route `/creditcheck` that accepts POST requests. The route handles the credit check and pre-qualification process based on the provided credit score and financial history. The `process_credit_check` function represents the logic to evaluate the credit score and financial history and determine the loan amount and interest rate range. The outcome message is then returned as a JSON response.
+In this code, we define a Flask API with a single `/credit_check` endpoint that accepts POST requests. The endpoint expects the loan applicant's data in the request body as a JSON object.
 
-Please note that this is a simplified example, and you may need to modify the code according to your specific requirements and data structure.
+The `credit_check` function retrieves the credit score and financial history from the request data. It then calls the `calculate_credit_score` and `get_financial_history` functions to perform the credit check logic.
+
+After obtaining the credit score and financial history, the `prequalify_applicant` function is called to pre-qualify the applicant based on these parameters. The result is then included in the response along with the credit score and financial history.
+
+Finally, the response is returned as a JSON object with a status code of 200.
+
+You can test this API by sending a POST request to `http://localhost:5000/credit_check` with the loan applicant's data in the request body.
+
+Note: The implementation of the credit check logic, financial history retrieval, and pre-qualification logic is not provided in this code snippet. You will need to implement these functions according to your own business requirements and data sources.
