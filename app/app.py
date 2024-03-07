@@ -1,54 +1,72 @@
-Sure! Here's a basic implementation of a Python Flask API for the given user story:
+Here is an example of Python Flask API code for the given user story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/credit-check', methods=['POST'])
-def credit_check():
+@app.route('/loan-application', methods=['POST'])
+def loan_application():
     data = request.get_json()
 
-    # Perform credit check and evaluate credit score and financial history
-    credit_score = evaluate_credit_score(data['applicant_id'])
-    financial_history = evaluate_financial_history(data['applicant_id'])
+    # Check if all required documents are provided
+    required_documents = ['identification', 'proof_of_income', 'credit_history', 'employment_details']
+    missing_documents = [doc for doc in required_documents if doc not in data]
+    if missing_documents:
+        return jsonify({'error': f'Missing documents: {", ".join(missing_documents)}'}), 400
 
-    # Pre-qualify applicant for loan amount and interest rate range
-    loan_amount, interest_rate_range = pre_qualify_applicant(credit_score, financial_history)
+    # Verify identification documents
+    identification_documents = data['identification']
+    is_identification_valid = verify_identification(identification_documents)
+    
+    # Verify proof of income
+    proof_of_income = data['proof_of_income']
+    is_proof_of_income_valid = verify_proof_of_income(proof_of_income)
 
-    # Prepare pre-qualification outcome response
-    outcome = {
-        'loan_amount': loan_amount,
-        'interest_rate_range': interest_rate_range,
-        'credit_score': credit_score,
-        'financial_history': financial_history
+    # Perform credit check
+    credit_history = data['credit_history']
+    creditworthiness = perform_credit_check(credit_history)
+
+    # Validate employment details
+    employment_details = data['employment_details']
+    is_employment_valid = validate_employment_details(employment_details)
+
+    # Calculate overall eligibility
+    is_eligible = is_identification_valid and is_proof_of_income_valid and creditworthiness and is_employment_valid
+
+    # Generate report
+    report = {
+        'identification_verification': 'Valid' if is_identification_valid else 'Invalid',
+        'proof_of_income_verification': 'Valid' if is_proof_of_income_valid else 'Invalid',
+        'creditworthiness': creditworthiness,
+        'employment_verification': 'Valid' if is_employment_valid else 'Invalid',
+        'loan_eligibility': 'Eligible' if is_eligible else 'Not Eligible'
     }
 
-    return jsonify(outcome)
+    return jsonify(report), 200
 
-def evaluate_credit_score(applicant_id):
-    # Implement credit score evaluation logic here
-    # Return credit score value
+def verify_identification(identification_documents):
+    # Perform identification verification logic here
+    # Return True if identification is valid, False otherwise
+    pass
 
-def evaluate_financial_history(applicant_id):
-    # Implement financial history evaluation logic here
-    # Return financial history value
+def verify_proof_of_income(proof_of_income):
+    # Perform proof of income verification logic here
+    # Return True if proof of income is valid, False otherwise
+    pass
 
-def pre_qualify_applicant(credit_score, financial_history):
-    # Implement pre-qualification logic here
-    # Calculate loan amount and interest rate range based on credit score and financial history
-    # Return loan amount and interest rate range
+def perform_credit_check(credit_history):
+    # Perform credit check logic here
+    # Return creditworthiness score or boolean value indicating creditworthiness
+    pass
+
+def validate_employment_details(employment_details):
+    # Perform employment details validation logic here
+    # Return True if employment details are valid, False otherwise
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-In this code, the `/credit-check` endpoint is used to perform the credit check and pre-qualification process. The endpoint expects a JSON payload containing the `applicant_id` for identifying the loan applicant.
-
-The `evaluate_credit_score` and `evaluate_financial_history` functions are placeholders for the actual logic to evaluate the credit score and financial history of the applicant. You should implement these functions according to your specific requirements.
-
-The `pre_qualify_applicant` function is also a placeholder for the pre-qualification logic. Here, you should calculate and determine the loan amount and interest rate range based on the credit score and financial history. Again, implement this function based on your specific business rules.
-
-Finally, the pre-qualification outcome is packaged into a JSON response and returned to the client.
-
-Make sure to replace the placeholders with your actual implementation logic. Also, don't forget to install the necessary Flask library (`pip install flask`) before running the code.
+Note: This code is a basic framework for implementing the given user story. You will need to fill in the verification and validation logic for each document type and credit check. Additionally, you may need to modify the data structure and logic based on your specific requirements.
