@@ -1,110 +1,109 @@
-Here's an example of Python Flask API code for the given user story:
+Sure! Here's an example of a Python Flask API code that implements the given user story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Store the loan applicants' data
-applicants = []
+# Sample data for testing
+applicants = [
+    {
+        "id": 1,
+        "name": "John Doe",
+        "identification": False,
+        "proof_of_income": False,
+        "credit_history": False,
+        "employment_details": False,
+        "eligibility": False
+    },
+    {
+        "id": 2,
+        "name": "Jane Smith",
+        "identification": True,
+        "proof_of_income": True,
+        "credit_history": True,
+        "employment_details": True,
+        "eligibility": True
+    }
+]
 
-
-@app.route('/documents', methods=['GET'])
-def get_document_checklist():
+# API endpoint to get the checklist of required documents
+@app.route('/documents/checklist', methods=['GET'])
+def get_documents_checklist():
     checklist = {
-        'identification': 'Valid government-issued ID',
-        'proof_of_income': 'Pay stubs or income tax returns',
-        'credit_history': 'Credit report from a credit bureau',
-        'employment_details': 'Employment verification letter'
+        "identification": "Valid identification document (e.g., passport, driver's license)",
+        "proof_of_income": "Proof of income (e.g., pay stubs, bank statements)",
+        "credit_history": "Credit history report",
+        "employment_details": "Employment details (e.g., job letter, salary slips)"
     }
     return jsonify(checklist)
 
+# API endpoint to upload and review applicant's identification documents
+@app.route('/documents/identification/<int:applicant_id>', methods=['POST'])
+def upload_identification_documents(applicant_id):
+    # Simulate document verification process
+    # In a real scenario, you would perform actual verification here
+    applicant = next((a for a in applicants if a['id'] == applicant_id), None)
+    if applicant:
+        applicant['identification'] = True
+        return jsonify({"message": "Identification documents verified successfully."})
+    else:
+        return jsonify({"message": "Applicant not found."}), 404
 
-@app.route('/documents/upload', methods=['POST'])
-def upload_documents():
-    data = request.get_json()
+# API endpoint to verify applicant's proof of income
+@app.route('/documents/proof_of_income/<int:applicant_id>', methods=['POST'])
+def verify_proof_of_income(applicant_id):
+    # Simulate proof of income verification process
+    # In a real scenario, you would perform actual verification here
+    applicant = next((a for a in applicants if a['id'] == applicant_id), None)
+    if applicant:
+        applicant['proof_of_income'] = True
+        return jsonify({"message": "Proof of income verified successfully."})
+    else:
+        return jsonify({"message": "Applicant not found."}), 404
 
-    # Validate and process the uploaded documents
-    identification_doc = data.get('identification')
-    proof_of_income_doc = data.get('proof_of_income')
-    credit_history_doc = data.get('credit_history')
-    employment_details_doc = data.get('employment_details')
+# API endpoint to perform credit check on the applicant
+@app.route('/credit_check/<int:applicant_id>', methods=['GET'])
+def perform_credit_check(applicant_id):
+    # Simulate credit check process
+    # In a real scenario, you would perform actual credit check here
+    applicant = next((a for a in applicants if a['id'] == applicant_id), None)
+    if applicant:
+        applicant['credit_history'] = True
+        return jsonify({"message": "Credit check completed successfully."})
+    else:
+        return jsonify({"message": "Applicant not found."}), 404
 
-    # Perform verification and eligibility assessment on the documents
-    verification_status = {
-        'identification': verify_identification(identification_doc),
-        'proof_of_income': verify_proof_of_income(proof_of_income_doc),
-        'credit_history': verify_credit_history(credit_history_doc),
-        'employment_details': verify_employment_details(employment_details_doc)
-    }
+# API endpoint to validate applicant's employment details
+@app.route('/employment_details/<int:applicant_id>', methods=['POST'])
+def validate_employment_details(applicant_id):
+    # Simulate employment details validation process
+    # In a real scenario, you would perform actual validation here
+    applicant = next((a for a in applicants if a['id'] == applicant_id), None)
+    if applicant:
+        applicant['employment_details'] = True
+        return jsonify({"message": "Employment details validated successfully."})
+    else:
+        return jsonify({"message": "Applicant not found."}), 404
 
-    # Determine overall eligibility based on verification status
-    overall_eligibility = assess_eligibility(verification_status)
+# API endpoint to get the verification status and eligibility assessment for each applicant
+@app.route('/applicants/<int:applicant_id>', methods=['GET'])
+def get_applicant_details(applicant_id):
+    applicant = next((a for a in applicants if a['id'] == applicant_id), None)
+    if applicant:
+        return jsonify(applicant)
+    else:
+        return jsonify({"message": "Applicant not found."}), 404
 
-    # Store the verification results and eligibility assessment
-    applicant = {
-        'verification_status': verification_status,
-        'overall_eligibility': overall_eligibility
-    }
-    applicants.append(applicant)
-
-    return jsonify(applicant), 201
-
-
-@app.route('/documents/report', methods=['GET'])
-def get_verification_report():
+# API endpoint to generate a report summarizing the verification results and eligibility assessment for each loan applicant
+@app.route('/report', methods=['GET'])
+def generate_report():
     return jsonify(applicants)
-
-
-def verify_identification(identification_doc):
-    # Perform identification document verification logic
-    if identification_doc:
-        return 'Valid'
-    else:
-        return 'Invalid'
-
-
-def verify_proof_of_income(proof_of_income_doc):
-    # Perform proof of income verification logic
-    if proof_of_income_doc:
-        return 'Verified'
-    else:
-        return 'Not provided'
-
-
-def verify_credit_history(credit_history_doc):
-    # Perform credit history verification logic
-    if credit_history_doc:
-        return 'Verified'
-    else:
-        return 'Not provided'
-
-
-def verify_employment_details(employment_details_doc):
-    # Perform employment details verification logic
-    if employment_details_doc:
-        return 'Verified'
-    else:
-        return 'Not provided'
-
-
-def assess_eligibility(verification_status):
-    # Perform eligibility assessment logic based on verification status
-    if all(value == 'Verified' for value in verification_status.values()):
-        return 'Eligible'
-    else:
-        return 'Not eligible'
-
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-This code sets up a Flask API with the following endpoints:
-- GET `/documents`: Returns a checklist of required documents for the loan application process.
-- POST `/documents/upload`: Allows the bank employee to upload the applicant's identification, proof of income, credit history, and employment details for verification and eligibility assessment.
-- GET `/documents/report`: Returns a report summarizing the verification results and eligibility assessment for each loan applicant.
+You can run this code using `python app.py` and test the API endpoints using a tool like Postman or cURL.
 
-The verification logic for each document type is implemented as separate functions (`verify_identification`, `verify_proof_of_income`, `verify_credit_history`, `verify_employment_details`). The `assess_eligibility` function determines the overall eligibility based on the verification status.
-
-Please note that this code is just a starting point and may need to be customized further based on your specific requirements and data storage needs.
+Please note that this is a simplified example and does not include actual document verification, credit check, or employment details validation logic. You would need to implement those parts according to your specific requirements and integrate with appropriate external services or databases.
