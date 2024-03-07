@@ -1,99 +1,62 @@
-Sure! Here's an example of a Python Flask API code that implements the Bank's Document Verification Process for Loan Eligibility Assessment:
+Sure! Here's an example of Python Flask API code for the given user story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Dummy data for testing
-documents = {
-    "identification": {
-        "status": "pending",
-        "details": None
-    },
-    "proof_of_income": {
-        "status": "pending",
-        "details": None
-    },
-    "credit_history": {
-        "status": "pending",
-        "details": None
-    },
-    "employment_details": {
-        "status": "pending",
-        "details": None
-    }
-}
+@app.route('/loan/verification', methods=['POST'])
+def verify_loan_eligibility():
+    # Get applicant's information from the request
+    applicant = request.get_json()
 
+    # Check if all required documents are provided
+    if not all(key in applicant for key in ['identification', 'proof_of_income', 'credit_history', 'employment_details']):
+        return jsonify({'message': 'Missing required documents'}), 400
 
-@app.route("/loan/documents", methods=["GET"])
-def get_required_documents():
-    return jsonify({
-        "required_documents": [
-            "identification",
-            "proof_of_income",
-            "credit_history",
-            "employment_details"
-        ]
-    })
+    # Verify the authenticity and accuracy of the provided documents
+    is_documents_verified = verify_documents(applicant['identification'], applicant['proof_of_income'], applicant['credit_history'], applicant['employment_details'])
 
+    if not is_documents_verified:
+        return jsonify({'message': 'Documents verification failed'}), 400
 
-@app.route("/loan/documents/<document_type>", methods=["POST"])
-def verify_document(document_type):
-    if document_type not in documents:
-        return jsonify({"message": "Invalid document type"}), 400
+    # Assess the applicant's eligibility for the loan based on verified documents
+    is_eligible = assess_loan_eligibility(applicant['identification'], applicant['proof_of_income'], applicant['credit_history'], applicant['employment_details'])
 
-    # Simulating document verification process
-    documents[document_type]["status"] = "verified"
-    documents[document_type]["details"] = request.json
+    # Generate a report indicating the applicant's eligibility status
+    report = generate_report(applicant['identification'], is_eligible)
 
-    return jsonify({"message": "Document verified successfully"})
+    # Notify the bank employee of the applicant's eligibility status
+    notify_bank_employee(report)
 
+    return jsonify({'message': 'Loan verification process completed'}), 200
 
-@app.route("/loan/eligibility", methods=["GET"])
-def assess_loan_eligibility():
-    for document_type, document in documents.items():
-        if document["status"] != "verified":
-            return jsonify({"message": "All documents must be verified"}), 400
+def verify_documents(identification, proof_of_income, credit_history, employment_details):
+    # Add logic to verify the provided documents
+    # Return True if all documents are verified, False otherwise
+    return True
 
-    # Calculate eligibility based on verified documents (dummy logic)
-    eligibility = True
+def assess_loan_eligibility(identification, proof_of_income, credit_history, employment_details):
+    # Add logic to assess the applicant's eligibility based on the verified documents
+    # Return True if the applicant is eligible for the loan, False otherwise
+    return True
 
-    return jsonify({"eligibility": eligibility})
-
-
-@app.route("/loan/report", methods=["GET"])
-def generate_loan_report():
+def generate_report(identification, is_eligible):
+    # Add logic to generate a report indicating the applicant's eligibility status
     report = {
-        "documents": documents,
-        "eligibility": assess_loan_eligibility().json["eligibility"]
+        'identification': identification,
+        'is_eligible': is_eligible
     }
+    return report
 
-    return jsonify(report)
+def notify_bank_employee(report):
+    # Add logic to notify the bank employee of the applicant's eligibility status
+    print(f"Notification: Applicant {report['identification']} is {'eligible' if report['is_eligible'] else 'not eligible'} for the loan")
 
-
-@app.route("/loan/notify", methods=["GET"])
-def notify_eligibility_status():
-    eligibility_status = assess_loan_eligibility().json["eligibility"]
-
-    if eligibility_status:
-        message = "Congratulations! Your loan application has been approved."
-    else:
-        message = "We're sorry, but your loan application has been rejected."
-
-    return jsonify({"message": message})
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-This code defines several endpoints for the different functionalities specified in the user story:
+This code sets up a Flask API with a single POST endpoint `/loan/verification` to handle the loan verification process. You can send a POST request to this endpoint with the applicant's information in the request body. The code then verifies the provided documents, assesses the applicant's eligibility, generates a report, and notifies the bank employee.
 
-1. `/loan/documents` (GET): Returns a checklist of required documents for the loan application process.
-2. `/loan/documents/<document_type>` (POST): Verifies a specific document by updating its status and details.
-3. `/loan/eligibility` (GET): Assesses the applicant's loan eligibility based on the verified documents.
-4. `/loan/report` (GET): Generates a report indicating the applicant's eligibility status and the details of the verified documents.
-5. `/loan/notify` (GET): Notifies the bank employee of the applicant's eligibility status for further processing.
-
-Please note that this is just a basic example and you may need to customize it further to fit your specific requirements.
+Please note that this is a basic example and you may need to modify the code to fit your specific requirements and integrate it with your database or other systems.
