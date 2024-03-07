@@ -1,58 +1,64 @@
-Sure! Here's a Python Flask API code that implements the given user story:
+Here's an example of Python Flask API code for the given User story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/loan_application', methods=['POST'])
-def process_loan_application():
-    # Get applicant's details from the request
-    applicant = request.get_json()
+# Endpoint to provide a checklist of required documents
+@app.route('/loan/documents', methods=['GET'])
+def get_required_documents():
+    required_documents = [
+        'Identification',
+        'Proof of Income',
+        'Credit History',
+        'Employment Details'
+    ]
+    return jsonify({'required_documents': required_documents})
 
-    # Check if all required documents are provided
-    required_documents = ['identification', 'proof_of_income', 'credit_history', 'employment_details']
-    missing_documents = [doc for doc in required_documents if doc not in applicant]
+# Endpoint to review and verify the provided documents
+@app.route('/loan/verify', methods=['POST'])
+def verify_documents():
+    data = request.get_json()
+    identification = data.get('identification')
+    proof_of_income = data.get('proof_of_income')
+    credit_history = data.get('credit_history')
+    employment_details = data.get('employment_details')
 
-    if missing_documents:
-        return jsonify({'error': f'Missing required documents: {", ".join(missing_documents)}'}), 400
+    # Perform document verification logic here
 
-    # Verify the provided documents (dummy verification process)
-    verification_status = verify_documents(applicant)
+    return jsonify({'verification_status': 'Documents verified successfully'})
 
-    # Assess the applicant's eligibility based on the verified documents (dummy eligibility assessment)
-    eligibility_status = assess_eligibility(verification_status)
+# Endpoint to assess the applicant's eligibility for the loan
+@app.route('/loan/eligibility', methods=['POST'])
+def assess_eligibility():
+    data = request.get_json()
+    eligibility = True  # Placeholder logic to assess eligibility based on verified documents
 
-    # Generate a report indicating the eligibility status
-    report = generate_report(applicant, eligibility_status)
+    return jsonify({'eligibility': eligibility})
 
-    # Notify the bank employee of the eligibility status
-    notify_employee(report)
+# Endpoint to generate a report indicating the applicant's eligibility status
+@app.route('/loan/report', methods=['POST'])
+def generate_report():
+    data = request.get_json()
+    eligibility = data.get('eligibility')
 
-    return jsonify(report)
+    # Generate report logic here
 
-def verify_documents(applicant):
-    # Dummy verification process
-    return {'identification': True, 'proof_of_income': True, 'credit_history': True, 'employment_details': True}
+    return jsonify({'report': 'Loan eligibility report generated successfully'})
 
-def assess_eligibility(verification_status):
-    # Dummy eligibility assessment
-    return 'Eligible' if all(verification_status.values()) else 'Not Eligible'
+# Endpoint to notify the bank employee of the applicant's eligibility status
+@app.route('/loan/notify', methods=['POST'])
+def notify_employee():
+    data = request.get_json()
+    eligibility_status = data.get('eligibility_status')
 
-def generate_report(applicant, eligibility_status):
-    return {
-        'applicant': applicant,
-        'eligibility_status': eligibility_status
-    }
+    # Notification logic here
 
-def notify_employee(report):
-    # Dummy notification process
-    print(f'Notification: Applicant is {report["eligibility_status"]} for the loan.')
+    return jsonify({'notification': 'Bank employee notified successfully'})
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-To test the API, you can use a tool like cURL or Postman to send a POST request to `http://localhost:5000/loan_application` with the applicant's details in the request body. The API will respond with a JSON report indicating the applicant's eligibility status for the loan.
-
-Note: This code is a simplified example and does not include actual document verification or eligibility assessment logic. You will need to implement these functionalities according to your specific requirements.
+Please note that this is just a basic example and you will need to implement the actual document verification logic, report generation logic, and notification logic according to your specific requirements.
