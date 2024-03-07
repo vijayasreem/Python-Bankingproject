@@ -1,72 +1,77 @@
-Here is an example of a Python Flask API code for the given User Story:
+Here is a sample Python Flask API code for the given user story:
 
 ```python
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
-# Dummy data for document verification
-documents = {
-    "identification": False,
-    "proof_of_income": False,
-    "credit_history": False,
-    "employment_details": False
-}
+# Endpoint to provide a checklist of required documents
+@app.route('/checklist', methods=['GET'])
+def get_checklist():
+    checklist = [
+        'Identification',
+        'Proof of income',
+        'Credit history',
+        'Employment details'
+    ]
+    return {'checklist': checklist}
 
-@app.route('/loan/verification', methods=['POST'])
-def verify_loan_eligibility():
-    applicant_documents = request.json
-
-    # Verify identification document
-    if applicant_documents.get('identification'):
-        documents['identification'] = True
+# Endpoint to review and verify the provided documents
+@app.route('/verify', methods=['POST'])
+def verify_documents():
+    data = request.get_json()
     
-    # Verify proof of income document
-    if applicant_documents.get('proof_of_income'):
-        documents['proof_of_income'] = True
+    identification = data.get('identification')
+    proof_of_income = data.get('proof_of_income')
+    credit_history = data.get('credit_history')
+    employment_details = data.get('employment_details')
     
-    # Verify credit history document
-    if applicant_documents.get('credit_history'):
-        documents['credit_history'] = True
+    # Perform verification logic here
     
-    # Verify employment details document
-    if applicant_documents.get('employment_details'):
-        documents['employment_details'] = True
+    return {'status': 'success', 'message': 'Documents verified successfully'}
+
+# Endpoint to assess the applicant's eligibility for the loan
+@app.route('/assess', methods=['POST'])
+def assess_eligibility():
+    data = request.get_json()
     
-    # Assess eligibility based on verified documents
-    eligibility_status = assess_loan_eligibility()
+    # Perform eligibility assessment logic here
+    
+    eligibility_status = True  # Placeholder value, replace with actual assessment
+    
+    return {'eligibility_status': eligibility_status}
 
-    # Generate eligibility report
-    report = generate_eligibility_report(eligibility_status)
-
-    # Notify bank employee of eligibility status
-    notify_bank_employee(eligibility_status)
-
-    return jsonify(report), 200
-
-def assess_loan_eligibility():
-    # Custom logic to assess loan eligibility based on verified documents
-    if all(documents.values()):
-        return "Eligible"
-    else:
-        return "Not Eligible"
-
-def generate_eligibility_report(eligibility_status):
-    # Custom logic to generate eligibility report
+# Endpoint to generate a report indicating the applicant's eligibility status
+@app.route('/generate_report', methods=['POST'])
+def generate_report():
+    data = request.get_json()
+    
+    eligibility_status = data.get('eligibility_status')
+    
+    # Generate report logic here
+    
     report = {
-        "eligibility_status": eligibility_status
+        'eligibility_status': eligibility_status,
+        'report': 'Sample report content'
     }
-    return report
+    
+    return {'report': report}
 
-def notify_bank_employee(eligibility_status):
-    # Custom logic to notify bank employee of eligibility status
-    if eligibility_status == "Eligible":
-        print("Applicant is eligible for further processing.")
-    else:
-        print("Applicant is not eligible for the loan.")
+# Endpoint to notify the bank employee of the applicant's eligibility status
+@app.route('/notify', methods=['POST'])
+def notify_employee():
+    data = request.get_json()
+    
+    eligibility_status = data.get('eligibility_status')
+    
+    # Notification logic here
+    
+    message = f'Applicant eligibility status: {eligibility_status}'
+    
+    return {'message': message}
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-Please note that this is just a basic example to demonstrate the functionality. You will need to add your own custom logic and integrate it with a database or any other required systems for a complete implementation.
+Please note that this is just a sample code and you will need to implement the actual verification, eligibility assessment, report generation, and notification logic according to your requirements.
