@@ -1,74 +1,48 @@
-Here is a Python Flask API code for the given User Story:
+Here is a sample Python Flask API code for the given user story:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Dictionary to store loan application documents and their verification status
-loan_documents = {
-    'identification': False,
-    'proof_of_income': False,
-    'credit_history': False,
-    'employment_details': False
-}
+# Placeholder for the document verification process
+def verify_documents(documents):
+    # Perform document verification logic here
+    # Return True if all documents are verified successfully, False otherwise
+    return True
 
-# API endpoint to get the checklist of required documents
-@app.route('/documents/checklist', methods=['GET'])
-def get_documents_checklist():
-    return jsonify(loan_documents)
+# Placeholder for the loan eligibility assessment process
+def assess_eligibility(documents):
+    # Perform loan eligibility assessment logic here
+    # Return True if the applicant is eligible for the loan, False otherwise
+    return True
 
-# API endpoint to review and verify the provided documents
-@app.route('/documents/verify', methods=['POST'])
-def verify_documents():
-    documents = request.json
+# API endpoint for the document verification and loan eligibility assessment process
+@app.route('/loan/assessment', methods=['POST'])
+def loan_assessment():
+    data = request.get_json()
+    documents = data['documents']
 
-    for document in documents:
-        if document in loan_documents:
-            loan_documents[document] = True
+    # Verify the provided documents
+    if verify_documents(documents):
+        # Assess the loan eligibility based on the verified documents
+        eligibility = assess_eligibility(documents)
 
-    return jsonify({'message': 'Documents verified successfully'})
+        # Generate a report indicating the eligibility status
+        report = {
+            'eligibility': eligibility,
+            'message': 'Congratulations! You are eligible for the loan.' if eligibility else 'Sorry! You are not eligible for the loan.'
+        }
 
-# API endpoint to assess the applicant's eligibility for the loan
-@app.route('/loan/assessment', methods=['GET'])
-def assess_loan_eligibility():
-    if all(loan_documents.values()):
-        eligibility_status = 'Eligible'
+        # Notify the bank employee of the eligibility status
+        # Implement your notification logic here
+
+        return jsonify(report), 200
     else:
-        eligibility_status = 'Not Eligible'
-
-    return jsonify({'eligibility_status': eligibility_status})
-
-# API endpoint to generate a report indicating the applicant's eligibility status
-@app.route('/loan/report', methods=['GET'])
-def generate_loan_report():
-    eligibility_status = assess_loan_eligibility().json['eligibility_status']
-    report = f"Applicant's eligibility status for the loan: {eligibility_status}"
-    
-    return jsonify({'report': report})
-
-# API endpoint to notify the bank employee of the applicant's eligibility status
-@app.route('/loan/notify', methods=['GET'])
-def notify_bank_employee():
-    eligibility_status = assess_loan_eligibility().json['eligibility_status']
-    
-    if eligibility_status == 'Eligible':
-        notification = 'Applicant is eligible for further processing.'
-    else:
-        notification = 'Applicant is not eligible for further processing.'
-    
-    return jsonify({'notification': notification})
+        return jsonify({'message': 'Failed to verify documents.'}), 400
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 ```
 
-You can run this Flask API code on your local machine by executing the script. The API provides the following endpoints:
-
-- `GET /documents/checklist`: Returns the checklist of required documents for the loan application process.
-- `POST /documents/verify`: Allows the bank employee to review and verify the provided documents.
-- `GET /loan/assessment`: Assesses the applicant's eligibility for the loan based on the verified documents.
-- `GET /loan/report`: Generates a report indicating the applicant's eligibility status for the loan.
-- `GET /loan/notify`: Notifies the bank employee of the applicant's eligibility status for further processing.
-
-Please note that this code only provides the basic structure and logic for the given user story. You may need to further modify and enhance it according to your specific requirements and business logic.
+In this code, we have defined a Flask API with a single endpoint `/loan/assessment` that accepts a POST request containing the applicant's documents. The `verify_documents` function performs the document verification logic, and the `assess_eligibility` function performs the loan eligibility assessment logic. The API returns a JSON response containing a report indicating the eligibility status of the applicant. You can implement the notification logic according to your requirements.
