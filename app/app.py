@@ -1,56 +1,65 @@
-Sure! Here's an example of a Python Flask API code that implements the Bank's Credit Check and Pre-Qualification Process for Loan Applicants user story:
+Here is an example of Python Flask API code that implements the given user story for the Bank's Document Verification Process for Loan Eligibility Assessment:
 
 ```python
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/credit_check', methods=['POST'])
-def credit_check():
-    data = request.get_json()
-
-    # Perform credit check logic here
-    credit_score = calculate_credit_score(data)
-    financial_history = get_financial_history(data)
-
-    # Pre-qualify the applicant based on credit score and financial history
-    prequalification_result = prequalify_applicant(credit_score, financial_history)
-
-    # Generate response
-    response = {
-        'credit_score': credit_score,
-        'financial_history': financial_history,
-        'prequalification_result': prequalification_result
+# Endpoint to get the checklist of required documents
+@app.route('/documents/checklist', methods=['GET'])
+def get_document_checklist():
+    checklist = {
+        'identification': True,
+        'proof_of_income': True,
+        'credit_history': True,
+        'employment_details': True
     }
+    return jsonify(checklist)
 
-    return jsonify(response), 200
+# Endpoint to upload and review the applicant's identification documents
+@app.route('/documents/identification', methods=['POST'])
+def upload_identification_documents():
+    # Code to validate and process the uploaded identification documents
+    # ...
 
-def calculate_credit_score(data):
-    # Implement credit score calculation logic here
-    return data['credit_score']
+    return jsonify({'message': 'Identification documents uploaded successfully.'})
 
-def get_financial_history(data):
-    # Implement financial history retrieval logic here
-    return data['financial_history']
+# Endpoint to verify the applicant's proof of income
+@app.route('/documents/proof_of_income', methods=['POST'])
+def verify_proof_of_income():
+    # Code to verify the proof of income documents
+    # ...
 
-def prequalify_applicant(credit_score, financial_history):
-    # Implement pre-qualification logic here
-    # Use credit_score and financial_history to determine loan amount and interest rate range
-    # Return pre-qualification result as a string or any format you prefer
-    return 'Pre-qualified for a loan amount of $X to $Y with an interest rate of Z% to W%'
+    return jsonify({'message': 'Proof of income verified successfully.'})
+
+# Endpoint to perform a credit check on the applicant
+@app.route('/credit_check', methods=['POST'])
+def perform_credit_check():
+    # Code to perform credit check and retrieve credit history
+    # ...
+
+    return jsonify({'message': 'Credit check performed successfully.'})
+
+# Endpoint to validate the applicant's employment details
+@app.route('/employment_details', methods=['POST'])
+def validate_employment_details():
+    # Code to validate employment details
+    # ...
+
+    return jsonify({'message': 'Employment details validated successfully.'})
+
+# Endpoint to generate a report summarizing the verification results and eligibility assessment
+@app.route('/report', methods=['GET'])
+def generate_report():
+    # Code to generate the report
+    # ...
+
+    return jsonify({'message': 'Report generated successfully.'})
 
 if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-In this code, we define a Flask API with a single `/credit_check` endpoint that accepts POST requests. The endpoint expects the loan applicant's data in the request body as a JSON object.
+This code defines several endpoints for each step of the document verification process. Each endpoint handles the necessary operations and returns a JSON response indicating the status or result of the operation.
 
-The `credit_check` function retrieves the credit score and financial history from the request data. It then calls the `calculate_credit_score` and `get_financial_history` functions to perform the credit check logic.
-
-After obtaining the credit score and financial history, the `prequalify_applicant` function is called to pre-qualify the applicant based on these parameters. The result is then included in the response along with the credit score and financial history.
-
-Finally, the response is returned as a JSON object with a status code of 200.
-
-You can test this API by sending a POST request to `http://localhost:5000/credit_check` with the loan applicant's data in the request body.
-
-Note: The implementation of the credit check logic, financial history retrieval, and pre-qualification logic is not provided in this code snippet. You will need to implement these functions according to your own business requirements and data sources.
+Note: This is just an example implementation and you may need to modify it according to your specific requirements and database operations.
