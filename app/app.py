@@ -1,6 +1,3 @@
-Here is a sample Python Flask API code for the given user story:
-
-```python
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -72,6 +69,3 @@ def notify_employee():
 
 if __name__ == '__main__':
     app.run(debug=True)
-```
-
-Please note that this is just a sample code and you will need to implement the actual verification, eligibility assessment, report generation, and notification logic according to your requirements.
