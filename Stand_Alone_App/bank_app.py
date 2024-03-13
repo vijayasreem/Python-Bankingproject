@@ -55,10 +55,11 @@ class Bank:
         self.m_b3 = tk.Button(self.menu,text='Profile',bd=0,bg="#777777",font=('Times','20','bold'),command=self.show_profile,fg="#aadcba")
         self.m_b3.grid(row=0,column=1,padx=76,pady=25)
 
+        self.m_b4 = tk.Button(self.menu,text='CHECK BALANCE',width=15,bg="#777777",font=('Times','20','bold'),command=self.check_balance,fg="#003b8b")
+        self.m_b4.grid(row=3,column=0,padx=60,pady=10)
 
-        self.m_b4 = tk.Button(self.menu,text='LOGOUT',width=10,bg="#777777",font=('Times','18','bold'),command=self.show_f,fg="#ff0000")
-
-        self.m_b4.grid(row=3,column=1,padx=76,pady=15)
+        self.m_b5 = tk.Button(self.menu,text='LOGOUT',width=10,bg="#777777",font=('Times','18','bold'),command=self.show_f,fg="#ff0000")
+        self.m_b5.grid(row=3,column=1,padx=76,pady=15)
         self.menu.grid(padx=self.ws*.3,pady=self.hs*.2)
 
     def credit_Balance(self):
@@ -239,7 +240,6 @@ class Bank:
         self.p_b3.grid(row=5,column=1,padx=64,pady=18)
 
         self.profframe.grid(padx=self.ws*.3,pady=self.hs*.2)
-
 
     def update_password(self):
         old = self.Old_Password.get()
