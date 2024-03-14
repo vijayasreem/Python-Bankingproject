@@ -1,47 +1,41 @@
-Sure! Here's an example of a Python Flask API code that implements the given user story:
+Sure! Here's an example of how you can create a Python Flask API for the given User Story:
 
 ```python
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-@app.route('/prequalification', methods=['POST'])
-def prequalification():
-    # Get applicant's credit score and financial history from the request
-    credit_score = request.json['credit_score']
-    financial_history = request.json['financial_history']
+# Store loan applications in memory (replace with a database in production)
+loan_applications = []
 
-    # Evaluate creditworthiness and determine loan amount and interest rate range
-    loan_amount = calculate_loan_amount(credit_score, financial_history)
-    interest_rate_range = calculate_interest_rate_range(credit_score, financial_history)
+# Route for submitting a loan application
+@app.route('/loan-application', methods=['POST'])
+def submit_loan_application():
+    data = request.get_json()
 
-    # Construct pre-qualification response
-    response = {
-        'loan_amount': loan_amount,
-        'interest_rate_range': interest_rate_range,
-        'message': generate_prequalification_message(loan_amount, interest_rate_range)
+    # Validate the required fields
+    if not data.get('personal_details') or not data.get('income_information') or not data.get('employment_details'):
+        return jsonify({'error': 'Incomplete application form'}), 400
+
+    # Process the loan application
+    loan_application = {
+        'personal_details': data.get('personal_details'),
+        'income_information': data.get('income_information'),
+        'employment_details': data.get('employment_details')
     }
+    loan_applications.append(loan_application)
 
-    return jsonify(response)
+    return jsonify({'message': 'Loan application submitted successfully'}), 200
 
-def calculate_loan_amount(credit_score, financial_history):
-    # Perform credit check and calculate loan amount based on credit score and financial history
-    # Replace this with your actual logic
-    return 10000
-
-def calculate_interest_rate_range(credit_score, financial_history):
-    # Determine interest rate range based on credit score and financial history
-    # Replace this with your actual logic
-    return {'min': 5.0, 'max': 10.0}
-
-def generate_prequalification_message(loan_amount, interest_rate_range):
-    # Generate a clear and understandable explanation of the pre-qualification outcome
-    return f'Congratulations! You are pre-qualified for a loan amount of ${loan_amount} with an interest rate range of {interest_rate_range["min"]}% - {interest_rate_range["max"]}%.'
+# Route for retrieving all loan applications
+@app.route('/loan-applications', methods=['GET'])
+def get_loan_applications():
+    return jsonify(loan_applications), 200
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 ```
 
-This code defines a Flask API endpoint `/prequalification` that expects a POST request containing the applicant's credit score and financial history in the request body. It then evaluates the creditworthiness of the applicant and determines the loan amount and interest rate range for pre-qualification. Finally, it constructs a response containing the loan amount, interest rate range, and a clear explanation of the pre-qualification outcome.
+This code sets up a basic Flask API with two routes. The `submit_loan_application` route handles the submission of a loan application form, validating the required fields and storing the application data in memory. The `get_loan_applications` route retrieves all the loan applications stored in memory.
 
-Note: This code provides a basic framework for implementing the given user story. You will need to replace the placeholder logic in the `calculate_loan_amount` and `calculate_interest_rate_range` functions with your actual credit check and pre-qualification algorithms.
+You can customize and extend this code based on your specific requirements, such as adding additional validation, connecting to a database, or implementing authentication and authorization mechanisms.
